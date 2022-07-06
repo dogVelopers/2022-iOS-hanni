@@ -29,14 +29,26 @@ class ViewController: UIViewController {
     
     // 내 위치로 돌아가는 버튼을 생성한다.
     lazy var locationBtn: UIButton = {
-        let btn = UIButton()
-        btn.setTitle("내 위치", for: .normal)
-        btn.backgroundColor = .systemGray
-        btn.setTitleColor(.white, for: .normal)
-        btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        btn.tag = 1
+        let btn = UIButton()                    // 버튼 생성하기 위한 변수 생성
+        btn.setTitle("내 위치", for: .normal)     // 버튼에 들어갈 글씨
+        btn.backgroundColor = .systemGray       // 버튼 색상
+        btn.setTitleColor(.white, for: .normal) // 버튼 글씨 색상
+        btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)   // 버튼이 경계 안에서 터치 됐을때 buttonAction이 작동한다.
+        btn.tag = 1     // tag 번호를 1로 설정한다.
         return btn
     }()
+    
+    // buttonAction을 설정하기 위한 함수
+    @objc func buttonAction(sender: UIButton!) {
+        print("내 위치로 이동")           // 작동되는지 확인하기 위한 print문
+        let btnsendtag: UIButton = sender
+        if btnsendtag.tag == 1 {    // 버튼에서 설정한 tag 번호가 1이면
+            DispatchQueue.main.async {  // 설정한 위치로 이동한다.
+                self.mapView.setUserTrackingMode(.follow, animated: true)   // 위치에 따라 화면이 바뀐다.
+            }
+            dismiss(animated: true, completion: nil)    // 꼭 작성해야될 지 모르겠다.
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,17 +74,6 @@ class ViewController: UIViewController {
         locationBtn.heightAnchor.constraint(equalToConstant: 100).isActive = true
         locationBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
         locationBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
-    }
-    
-    @objc func buttonAction(sender: UIButton!) {
-        print("내 위치로 이동")
-        let btnsendtag: UIButton = sender
-        if btnsendtag.tag == 1 {
-            DispatchQueue.main.async {
-                self.mapView.setUserTrackingMode(.follow, animated: true)   // 위치에 따라 화면이 바뀐다.
-            }
-            dismiss(animated: true, completion: nil)
-        }
     }
     
     func getLocationUsagePermission() {
