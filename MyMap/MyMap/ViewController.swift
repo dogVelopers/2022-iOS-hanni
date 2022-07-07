@@ -34,23 +34,20 @@ class ViewController: UIViewController {
         btn.backgroundColor = .systemGray       // 버튼 색상
         btn.setTitleColor(.white, for: .normal) // 버튼 글씨 색상
         btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)   // 버튼이 경계 안에서 터치 됐을때 buttonAction이 작동한다.
-        btn.tag = 1     // tag 번호를 1로 설정한다.
         return btn
     }()
     
     // buttonAction을 설정하기 위한 함수
     @objc func buttonAction(sender: UIButton!) {
         print("내 위치로 이동")           // 작동되는지 확인하기 위한 print문
-        let btnsendtag: UIButton = sender
-        if btnsendtag.tag == 1 {    // 버튼에서 설정한 tag 번호가 1이면
-            DispatchQueue.main.async {  // 설정한 위치로 이동한다.
-                self.mapView.setUserTrackingMode(.follow, animated: true)   // 위치에 따라 화면이 바뀐다.
-            }
-            dismiss(animated: true, completion: nil)    // 꼭 작성해야될 지 모르겠다.
-        }
+//        DispatchQueue.main.async {    // 지금은 비동기를 해 줄 필요가 없다.
+        // 설정한 위치로 이동한다.
+        self.mapView.setUserTrackingMode(.follow, animated: true)   // 위치에 따라 화면이 바뀐다.
+//        }
     }
 
     override func viewDidLoad() {
+        // 어떤 함수와 어떤 변수가 있는지 한 번 읽어온다.
         super.viewDidLoad()
         
         getLocationUsagePermission()        // 권한을 요청하기 위한 창
