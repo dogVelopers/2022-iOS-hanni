@@ -10,7 +10,7 @@ import MapKit           // 지도를 사용하기 위해 import를 해준다.
 import CoreLocation     // GPS를 사용하기 위해 import를 해준다.
 
 class ViewController: UIViewController {
-
+    
     // View를 변수에 넣어 생성한다.
     let mapView: MKMapView = {
         let map = MKMapView()
@@ -29,23 +29,55 @@ class ViewController: UIViewController {
     
     // 내 위치로 돌아가는 버튼을 생성한다.
     lazy var locationBtn: UIButton = {
-        let btn = UIButton()                    // 버튼 생성하기 위한 변수 생성
-        btn.setTitle("내 위치", for: .normal)     // 버튼에 들어갈 글씨
-        btn.backgroundColor = .systemGray       // 버튼 색상
-        btn.setTitleColor(.white, for: .normal) // 버튼 글씨 색상
-        btn.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)   // 버튼이 경계 안에서 터치 됐을때 buttonAction이 작동한다.
-        return btn
+        let btn1 = UIButton()                    // 버튼 생성하기 위한 변수 생성
+//        btn1.setTitle("내 위치", for: .normal)     // 버튼에 들어갈 글씨
+//        btn1.backgroundColor = .systemGray       // 버튼 색상
+//        btn1.setTitleColor(.white, for: .normal) // 버튼 글씨 색상
+        btn1.setImage(UIImage(systemName: "person"), for: .normal)
+        btn1.tintColor = .black
+        btn1.addTarget(self, action: #selector(buttonAction1), for: .touchUpInside)   // 버튼이 경계 안에서 터치 됐을때 buttonAction이 작동한다.
+        return btn1
     }()
     
     // buttonAction을 설정하기 위한 함수
-    @objc func buttonAction(sender: UIButton!) {
+    @objc func buttonAction1(sender: UIButton!) {
         print("내 위치로 이동")           // 작동되는지 확인하기 위한 print문
-//        DispatchQueue.main.async {    // 지금은 비동기를 해 줄 필요가 없다.
+        //        DispatchQueue.main.async {    // 지금은 비동기를 해 줄 필요가 없다.
         // 설정한 위치로 이동한다.
         self.mapView.setUserTrackingMode(.follow, animated: true)   // 위치에 따라 화면이 바뀐다.
-//        }
+        //        }
     }
-
+    
+    // 위성지도로 바뀌는 버튼을 생성한다.
+    lazy var viewChangeBtn: UIButton = {
+        let btn2 = UIButton()                    // 버튼 생성하기 위한 변수 생성
+        btn2.setImage(UIImage(systemName: "location.circle"), for: .normal)
+        btn2.tintColor = .black
+        btn2.addTarget(self, action: #selector(buttonAction2), for: .touchUpInside)   // 버튼이 경계 안에서 터치 됐을때 buttonAction이 작동한다.
+        return btn2
+    }()
+    
+    // 기본지도로 바뀌는 버튼을 생성한다.
+    lazy var viewChangeBtn2: UIButton = {
+        let btn3 = UIButton()                    // 버튼 생성하기 위한 변수 생성
+        btn3.setImage(UIImage(systemName: "location.circle"), for: .normal)
+        btn3.tintColor = .blue
+        btn3.addTarget(self, action: #selector(buttonAction3), for: .touchUpInside)   // 버튼이 경계 안에서 터치 됐을때 buttonAction이 작동한다.
+        return btn3
+    }()
+    
+    // buttonAction을 설정하기 위한 함수
+    @objc func buttonAction2(sender: UIButton!) {
+        print("선택한 지도 뷰로 변경")           // 작동되는지 확인하기 위한 print문
+        mapView.mapType = MKMapType.satellite
+    }
+    
+    // buttonAction을 설정하기 위한 함수
+    @objc func buttonAction3(sender: UIButton!) {
+        print("선택한 지도 뷰로 변경")           // 작동되는지 확인하기 위한 print문
+        mapView.mapType = MKMapType.standard
+    }
+    
     override func viewDidLoad() {
         // 어떤 함수와 어떤 변수가 있는지 한 번 읽어온다.
         super.viewDidLoad()
@@ -57,6 +89,8 @@ class ViewController: UIViewController {
         self.view.addSubview(mapView)
         // btn을 넣어준다.
         self.view.addSubview(locationBtn)
+        self.view.addSubview(viewChangeBtn)
+        self.view.addSubview(viewChangeBtn2)
         
         // View 위치 설정(제약조건)
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -65,12 +99,25 @@ class ViewController: UIViewController {
         mapView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         mapView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         
-        // btn 위치 설정(제약 조건)
+        // btn1 위치 설정(제약 조건)
         locationBtn.translatesAutoresizingMaskIntoConstraints = false
-        locationBtn.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        locationBtn.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        locationBtn.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        locationBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
         locationBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
         locationBtn.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        
+        // btn2 위치 설정(제약 조건)
+        viewChangeBtn.translatesAutoresizingMaskIntoConstraints = false
+        viewChangeBtn.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        viewChangeBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        viewChangeBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
+        viewChangeBtn.topAnchor.constraint(equalTo: locationBtn.topAnchor, constant: 50).isActive = true
+        // btn3 위치 설정(제약 조건)
+        viewChangeBtn2.translatesAutoresizingMaskIntoConstraints = false
+        viewChangeBtn2.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        viewChangeBtn2.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        viewChangeBtn2.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
+        viewChangeBtn2.topAnchor.constraint(equalTo: viewChangeBtn.topAnchor, constant: 50).isActive = true
     }
     
     func getLocationUsagePermission() {
