@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A3D69C82882EAFE00FBD21C /* Marker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3D69C72882EAFE00FBD21C /* Marker.swift */; };
 		2A60040C286EB23800D17A88 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A60040B286EB23800D17A88 /* AppDelegate.swift */; };
 		2A60040E286EB23800D17A88 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A60040D286EB23800D17A88 /* SceneDelegate.swift */; };
 		2A600410286EB23800D17A88 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A60040F286EB23800D17A88 /* ViewController.swift */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A3D69C72882EAFE00FBD21C /* Marker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Marker.swift; sourceTree = "<group>"; };
 		2A600408286EB23800D17A88 /* MyMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A60040B286EB23800D17A88 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2A60040D286EB23800D17A88 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 				2A60040B286EB23800D17A88 /* AppDelegate.swift */,
 				2A60040D286EB23800D17A88 /* SceneDelegate.swift */,
 				2A60040F286EB23800D17A88 /* ViewController.swift */,
+				2A3D69C72882EAFE00FBD21C /* Marker.swift */,
 				2A600414286EB23900D17A88 /* Assets.xcassets */,
 				2A600416286EB23900D17A88 /* LaunchScreen.storyboard */,
 				2A600419286EB23900D17A88 /* Info.plist */,
@@ -137,6 +140,7 @@
 				2A600410286EB23800D17A88 /* ViewController.swift in Sources */,
 				2A60040C286EB23800D17A88 /* AppDelegate.swift in Sources */,
 				2A60040E286EB23800D17A88 /* SceneDelegate.swift in Sources */,
+				2A3D69C82882EAFE00FBD21C /* Marker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

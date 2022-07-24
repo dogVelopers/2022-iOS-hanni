@@ -72,6 +72,72 @@ class ViewController: UIViewController {
         }
     }
     
+    // 위치를 나타낼 함수
+    func createMarker(title: String, subtitle: String, coordinate: CLLocationCoordinate2D) {
+        let marker = Marker(title: title, subtitle: subtitle, coordinate: coordinate)
+        mapView.addAnnotation(marker)
+    }
+    
+    // 클릭 재스처를 추가하기 위한 함수
+    func addGesture() {
+        let touch = UITapGestureRecognizer(target: self, action: #selector(didClickMapView(sender:)))
+        self.mapView.addGestureRecognizer(touch)
+    }
+    
+    // 핀 생성 버튼
+    lazy var createMarkerButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "mappin.and.ellipse"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(createMarkerAction), for: .touchUpInside)
+        return button
+    }()
+    
+    let popupView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 16
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    // title 입력 textfield
+    lazy var titleText: UITextField = {
+        let title = UITextField()
+        title.frame = CGRect(x: 65, y: 60, width: 200, height: 30)
+        title.placeholder = "장소 이름"           // textfield 기본 텍스트
+        title.borderStyle = .roundedRect
+        title.clearButtonMode = .whileEditing   // 입력하기 위해서 clear한 btn상태
+        return title
+    }()
+    
+    // subtitle 입력 textfield
+    lazy var subtitleText: UITextField = {
+        let subtitle = UITextField()
+        subtitle.frame = CGRect(x: 65, y: 120, width: 200, height: 30)
+        subtitle.placeholder = "장소 설명"           // textfield 기본 텍스트
+        subtitle.borderStyle = .roundedRect
+        subtitle.clearButtonMode = .whileEditing   // 입력하기 위해서 clear한 btn상태
+        return subtitle
+    }()
+    
+    // 확인버튼
+    lazy var checkBtn: UIButton = {
+        let checkBtn = UIButton()
+        checkBtn.setImage(UIImage(systemName: "checkmark.rectangle"), for: .normal)
+        checkBtn.translatesAutoresizingMaskIntoConstraints = false
+        checkBtn.tintColor = .black
+        checkBtn.sizeToFit()
+        checkBtn.addTarget(self, action: #selector(confirmAction), for: .touchUpInside)
+        return checkBtn
+    }()
+    
+    // popupView에 넣기
+    
+    // 생성하고자하는 위치
+    var willCreateLocation: CLLocationCoordinate2D = CLLocationCoordinate2D()
+    
     override func viewDidLoad() {
         // 어떤 함수와 어떤 변수가 있는지 한 번 읽어온다.
         super.viewDidLoad()
@@ -84,6 +150,11 @@ class ViewController: UIViewController {
         // btn을 넣어준다.
         self.view.addSubview(locationBtn)
         self.view.addSubview(changeMapViewBtn)
+        self.view.addSubview(createMarkerButton)
+        self.view.addSubview(popupView)
+        self.popupView.addSubview(titleText)
+        self.popupView.addSubview(subtitleText)
+        self.popupView.addSubview(checkBtn)
         
         // View 위치 설정(제약조건)
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -105,12 +176,68 @@ class ViewController: UIViewController {
         changeMapViewBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
         changeMapViewBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
         changeMapViewBtn.topAnchor.constraint(equalTo: locationBtn.topAnchor, constant: 50).isActive = true
+        
+        // button 위치 설정
+        createMarkerButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        createMarkerButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        createMarkerButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
+        createMarkerButton.topAnchor.constraint(equalTo: locationBtn.topAnchor, constant: 90).isActive = true
+        
+        // popupView 위치 설정
+        popupView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
+        popupView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -100).isActive = true
+        popupView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30).isActive = true
+        popupView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
+        
+        // popupView Btn 위치 설정
+        checkBtn.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 400).isActive = true
+        checkBtn.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -100).isActive = true
+        checkBtn.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30).isActive = true
+        checkBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30).isActive = true
+        
+        createMarker(title: "태마파크", subtitle: "디즈니랜드", coordinate: CLLocationCoordinate2D(latitude: 33.812097, longitude: -117.918969))
+        
+        addGesture()
     }
     
     func getLocationUsagePermission() {
         self.lovationManager.requestWhenInUseAuthorization()    // 권한을 요청하는 것
     }
 }
+
+// MARK: - 오브젝트 함수 모음
+
+extension ViewController {
+    // 앱을 클릭하면 실행되는 함수
+    @objc func didClickMapView(sender: UITapGestureRecognizer) {
+        // popupView 띄우기
+        createMarkerAction()
+        
+        let location: CGPoint = sender.location(in: self.mapView)
+//        let mapLocation: CLLocationCoordinate2D = self.mapView.convert(location, toCoordinateFrom: self.mapView)
+        willCreateLocation = self.mapView.convert(location, toCoordinateFrom: self.mapView)
+        
+//        print("위도 : \(mapLoscation.latitude), 경도 : \(mapLocation.longitude)")
+        
+        // 클릭된 상태에서는 생성되면 안됨.
+//        createMarker(title: "Test", subtitle: "Test!!", coordinate: mapLocation)
+    }
+    
+    @objc func createMarkerAction() {
+        // 흰색 뷰를 보이게
+        print("흰색 popView")
+        popupView.isHidden.toggle()
+    }
+    
+    // 확인 버튼 액션
+    @objc func confirmAction() {
+        print("위도: \(willCreateLocation.latitude), 경도: \(willCreateLocation.longitude)")
+        createMarker(title: "\(titleText.text!)", subtitle: "\(subtitleText.text!)", coordinate: willCreateLocation)
+        popupView.isHidden = true   // 팝업창 닫기
+    }
+}
+
+// MARK: - GPS 권한 함수 모음
 
 extension ViewController: CLLocationManagerDelegate {   // 기능 별로 분리해서 상속으로 표현하는 것이 좋다.
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
